@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/utility.css">
+    <link rel="stylesheet" href="./css/media_queries.css">
+</head>
+<body class="old-skool-bg padding-0 margin-0 flex-0 width-100p">
+    <div class="left">
+        <header>
+            <nav class="flex-0 justify-spc-btw align-center">
+                <div class="logo flex-0 justify-center align-center">
+                    <img height="45" src="./images/nav_bar/nexora-logo.png" alt="App logo">
+                </div>
+                <div class="options">
+                    <ul class="padding-0 flex-0 align-center">
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="#">Home</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/new-post">New Post</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/in-development">Community</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/contact">Contact</a></span></li>
+                        <% if (locals.isAuthenticated) { %>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                        <% } else { %>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                        <% } %>
+                    </ul>
+                    <div class="hamburger">
+                        <img height="30" src="./svgs/nav_bar/hamburger.svg" alt="Hamburger icon">
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="main-container flex-0">
+            <aside class="recent-post-container">
+                <div class="recent-post-card flex-0">
+                    <div class="image-container flex-0 align-center justify-center">
+                        <img src="<%= latestPost["poster"] %>" alt="Review poster">
+                    </div>
+                    <div class="recent-post flex-column-0">
+                        <span class="blog-post-title text-overflow-2l"><a href=""><%= latestPost["title"] %></a></span>
+                        <span class="blog-post-date"><b><%= latestPost["created_date"] %></b></span>
+                        <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                        <span class="blog-post-desc recent text-overflow-12l"><%= latestPost["content"] %></span>
+                        <div class="blog-post-btns flex-0 justify-spc-btw">
+                            <button class="share-btn">Share</button>
+                            <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="<%= `posts/${latestPost["post_id"]}` %>">Check it out</a></button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <main>
+                <div class="content-list-wrapper">
+                    <div class="content-list-container">
+                        <div class="content-list flex-column-0">
+                            <% for( let i = 0; i < posts.length; i++ ) { %>
+                                <div class="blog-card flex-0">
+                                    <div class="image-container flex-0 align-center justify-center">
+                                        <img src="<%= posts[i]["poster"] %>" alt="Review poster">
+                                    </div>
+                                    <div class="blog-post flex-column-0 justify-spc-btw">
+                                        <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                            <span class="blog-post-title text-overflow-2l"><a href=""><%= posts[i].title %></a></span>
+                                            <!-- <button class="edit-btn">Edit</button> -->
+                                        </div>
+                                        <span class="blog-post-date"><b><%= posts[i].created_date %></b></span>
+                                        <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                        <span class="blog-post-desc text-overflow-4l"><%= posts[i].content %></span>
+                                        <div class="blog-post-btns flex-0 justify-spc-btw">
+                                            <button class="share-btn">Share</button>
+                                            <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="<%= `posts/${posts[i].post_id}` %>">Check it out</a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                            <div class="blog-card flex-0">
+                                <div class="image-container flex-0 align-center justify-center">
+                                    <img src="./images/posters/review-1-poster.jpg" alt="Review poster">
+                                </div>
+                                <div class="blog-post flex-column-0 justify-spc-btw">
+                                    <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                        <span class="blog-post-title text-overflow-2l"><a href="">Attack On Titan</a></span>
+                                        <!-- <button class="edit-btn">Edit</button> -->
+                                    </div>
+                                    <span class="blog-post-date"><b>November 16, 2023</b></span>
+                                    <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                    <span class="blog-post-desc text-overflow-4l">Like the other posts, it's not a review, yet just a fun fact. Fun fact: AOT story was real, Eren manipulated Ymir at the end, so that King Fritz would die instead of Ymir (Just like shown in the vision which might not be a vision) and so it led to current world, where Titans do not exist anymore, and people are watching real events as an Anime.</span>
+                                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                                        <button class="share-btn">Share</button>
+                                        <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="./htmls/checkitout1.html">Check it out</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blog-card flex-0">
+                                <div class="image-container flex-0 align-center justify-center">
+                                    <img src="./images/posters/review-2-poster.jpg" alt="Review poster">
+                                </div>
+                                <div class="blog-post flex-column-0 justify-spc-btw">
+                                    <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                        <span class="blog-post-title text-overflow-2l"><a href="">STRANGER THINGS</a></span>
+                                        <!-- <button class="edit-btn">Edit</button> -->
+                                    </div>
+                                    <span class="blog-post-date"><b>July 16, 2022</b></span>
+                                    <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                    <span class="blog-post-desc text-overflow-4l">The story is based on a youngster with prodigious flairs whose prowess is unknown to the world. It falls out in Hawkins(a fictional town of Roane County located in Indiana state), a nice-looking normal town, yet having some outlandish experiments unknown to people, in the stretch of 1980s. The most electrifying slice of the series is that it has a shitload of surprising, confounded haps that can be a bolt from the blue, one of the most surprising plots is the provenance of devilish bad guy that can drop a bombshell, you’d be astonished when you’ll find out about the baddy. The sensational narrative bottles up multifarious things throughout all of the seasons that are up for grabs namely friendship, adoration or love, adventure, actuality and a lot more. The concept (inspired by Montauk Project) and sound effects are absolutely dazzling. It takes in a flabbergasting mixture of horror, science, fun and adventure.</span>
+                                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                                        <button class="share-btn">Share</button>
+                                        <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="/posts/4">Check it out</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blog-card flex-0">
+                                <div class="image-container flex-0 align-center justify-center">
+                                    <img src="./images/posters/review-3-poster.jpg" alt="Review poster">
+                                </div>
+                                <div class="blog-post flex-column-0 justify-spc-btw">
+                                    <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                        <span class="blog-post-title text-overflow-2l"><a href="">GRAVE OF THE FIREFLIES Movie</a></span>
+                                        <!-- <button class="edit-btn">Edit</button> -->
+                                    </div>
+                                    <span class="blog-post-date"><b>September 25, 2021</b></span>
+                                    <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                    <span class="blog-post-desc text-overflow-4l">The story speaks for the confiding and fraternal relationship between siblings and their affinity. The factual narrative itself is based on the original events of two sibling Seita and Setsuko from the timeline of 1945. It takes place in the Japan in the course of World War 2 against America, reflecting the ambience of civilians, yet the sorrow, depression and the reality of world war way of life is more than meets the eye. There’s a saying that “Tears are the words that the heart can’t express”, which you may able to see in this charismatic film. The good part though you’ll not know the tie-up of the title and the plot of the tale (Of course without any spoilers) until the very end. It also reflects the graveness or value of food in one’s life, however, it’s a movie review not a social article, so, I’m taking that crunch in brief. It bears out the darkness of the war circumstance through the classic animation style by Ghibli Studio.</span>
+                                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                                        <button class="share-btn">Share</button>
+                                        <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="/posts/3">Check it out</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blog-card flex-0">
+                                <div class="image-container flex-0 align-center justify-center ">
+                                    <img src="./images/posters/review-4-poster.png" alt="Review poster">
+                                </div>
+                                <div class="blog-post flex-column-0 justify-spc-btw">
+                                    <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                        <span class="blog-post-title text-overflow-2l"><a href="">CHERNOBYL Miniseries</a></span>
+                                        <!-- <button class="edit-btn">Edit</button> -->
+                                    </div>
+                                    <span class="blog-post-date"><b>September 28, 2020</b></span>
+                                    <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                    <span class="blog-post-desc text-overflow-4l">It is a story based on true events, which betides in the course of 1986-1987s. A nuclear power plant named “V.I. Lenin” having positive void coefficient RBMK reactor located at Chernobyl has got an unforeseen problem which marked the start of a nuclear catastrophe. This story reflects the sacrifices and the choices of the government and the citizens of Chernobyl have made in the time of nuclear disaster. The science was strong, but the implantation is only as good as the men carrying it out. It encompasses spectacle of soviet soldiers, government and inhabitants about the nuclear incident. The series have true names of people related to this adversity as character names. But yeah! What I could experienced about that flabbergasting miniseries while watching it was the names were hard to cast one's mind back to. Don't think too much, you'll clock it too!</span>
+                                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                                        <button class="share-btn">Share</button>
+                                        <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="/posts/2">Check it out</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blog-card flex-0">
+                                <div class="image-container flex-0 align-center justify-center">
+                                    <img src="./images/posters/review-5-poster.jpg" alt="Review poster">
+                                </div>
+                                <div class="blog-post flex-column-0 justify-spc-btw">
+                                    <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                        <span class="blog-post-title text-overflow-2l"><a href="">DARK Web Series</a></span>
+                                        <!-- <button class="edit-btn">Edit</button> -->
+                                    </div>
+                                    <span class="blog-post-date"><b>September 10, 2020</b></span>
+                                    <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                    <span class="blog-post-desc text-overflow-4l">It’s the story of a mysterious cave, which allows journey through time, but not in a manner as we usually think of. There are plenty of moments where you can make choices related to each other sometimes, any influence in those choices can affect the cycle and devise a different path. Everything is connected one or the other way. It comprises absolutely great sound effects and surely the paradox. Man is able to pursue any goal, no matter how unattainable it may seem, but the consequences may ensue fons et origo a.k.a. the origin of something beyond one’s wildest dream. There are many unpredictable moments and events in this web series, which catches the attention of the spectator.</span>
+                                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                                        <button class="share-btn">Share</button>
+                                        <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="/posts/1">Check it out</a></button>
+                                    </div>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <%- include('partials/footer.ejs'); -%>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </div>
+
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+
+    <script src="./scripts/script.js" charset="UTF-8"></script>
+
+</body>
+</html>

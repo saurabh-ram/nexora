@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Page</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <link rel="stylesheet" href="../css/media_queries.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+
+        h1 > span {
+            color: #3e3f3c;
+            font-family: 'EB Garamond', sans-serif;
+            font-size: 44px;
+            font-weight: 400;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body class="old-skool-bg padding-0 margin-0 flex-0 width-100p overflo-x-hidden">
+    <div class="left">
+        <header>
+            <nav class="black-bg-1 flex-0 justify-spc-btw align-center">
+                <div class="logo flex-0 justify-center align-center">
+                    <img class="invert" height="45" src="../images/nav_bar/nexora-logo.png" alt="App logo">
+                </div>
+                <div class="options flex justify-center align-center">
+                    <ul class="padding-0 flex-0 align-center">
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/">Home</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/new-post">New Post</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/in-development">Community</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
+                        <% if (locals.isAuthenticated) { %>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                        <% } else { %>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                        <% } %>
+                    </ul>
+                    <div class="hamburger">
+                        <img height="30" src="../svgs/nav_bar/hamburger.svg" alt="Hamburger icon">
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="contact-wrapper flex-0 justify-center align-center">
+                <form class="contact-container flex-0 justify-center align-center" action="/posts" method="post" >
+                    <div class="contact-form flex-column-0">
+                        <h1><span>Contact Me</span></h1>
+                        <div class="form-fields flex-column align-center">
+                            <input name="name" type="text" class="feedback-input" placeholder="Name" />
+                            <input name="email" type="text" class="feedback-input" placeholder="Email" />
+                            <textarea name="text" class="feedback-input" placeholder="Comment"></textarea>
+                            <input type="submit" value="SUBMIT" />
+                        </div>
+                    </div>
+                    <figure>
+                        <div class="lottie-container">
+                            <lottie-player src="../lottietanimations/feedback.json"
+                            background="transparent"
+                            speed="1"
+                            style="width: 100%; height: 100%;"
+                            loop
+                            autoplay></lottie-player>
+                        </div>
+                    </figure>
+                </form>
+            </div>
+        </main>
+        <%- include('partials/footer.ejs'); -%>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </div>
+
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+
+    <script src="../scripts/script.js" charset="UTF-8"></script>
+</body>
+
+</html>

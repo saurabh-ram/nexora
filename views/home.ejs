@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/utility.css">
+    <link rel="stylesheet" href="./css/media_queries.css">
+    <style>
+        .recent-post-container {
+            background: url('<%= latestPost["poster"] %>') no-repeat center center;
+            background-size: cover;
+            background-position: 50% 100%;
+        }
+    </style>
+</head>
+<body class="old-skool-bg padding-0 margin-0 flex-0 width-100p">
+    <div class="left">
+        <header>
+            <nav class="flex-0 justify-spc-btw align-center">
+                <div class="logo flex-0 justify-center align-center">
+                    <img height="45" src="./images/nav_bar/nexora-logo.png" alt="App logo">
+                </div>
+                <div class="options">
+                    <ul class="padding-0 flex-0 align-center">
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="#">Home</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/new-post">New Post</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/in-development">Community</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/contact">Contact</a></span></li>
+                        <% if (locals.isAuthenticated) { %>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                        <% } else { %>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                        <% } %>
+                    </ul>
+                    <div class="hamburger">
+                        <img height="30" src="./svgs/nav_bar/hamburger.svg" alt="Hamburger icon">
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="main-container flex-0">
+            <aside class="recent-post-container">
+                <div class="recent-post-card flex-0">
+                    <div class="image-container flex-0 align-center justify-center">
+                        <img src="<%= latestPost["poster"] %>" alt="Review poster">
+                    </div>
+                    <div class="recent-post flex-column-0">
+                        <span class="blog-post-title text-overflow-2l"><a href=""><%= latestPost["title"] %></a></span>
+                        <span class="blog-post-date"><b><%= latestPost["created_date"] %></b></span>
+                        <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                        <span class="blog-post-desc recent text-overflow-12l"><%= latestPost["content"] %></span>
+                        <div class="blog-post-btns flex-0 justify-spc-btw">
+                            <button class="share-btn">Share</button>
+                            <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="<%= `posts/${latestPost["post_id"]}` %>">Check it out</a></button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <main>
+                <div class="content-list-wrapper">
+                    <div class="content-list-container">
+                        <div class="content-list flex-column-0">
+                            <% for( let i = 0; i < posts.length; i++ ) { %>
+                                <div class="blog-card flex-0">
+                                    <div class="image-container flex-0 align-center justify-center">
+                                        <img src="<%= posts[i]["poster"] %>" alt="Review poster">
+                                    </div>
+                                    <div class="blog-post flex-column-0 justify-spc-btw">
+                                        <div class="blog-post-title-container flex-0 justify-spc-btw">
+                                            <span class="blog-post-title text-overflow-2l"><a href=""><%= posts[i].title %></a></span>
+                                            <!-- <button class="edit-btn">Edit</button> -->
+                                        </div>
+                                        <span class="blog-post-date"><b><%= posts[i].created_date %></b></span>
+                                        <!-- <span class="spoiler-alert">Spoiler Alert!!</span> -->
+                                        <span class="blog-post-desc text-overflow-4l"><%= posts[i].content %></span>
+                                        <div class="blog-post-btns flex-0 justify-spc-btw">
+                                            <button class="share-btn">Share</button>
+                                            <button class="check-it-out-btn"><a class="text-decoration blueviolet-text" href="<%= `posts/${posts[i].post_id}` %>">Check it out</a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+        
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <%- include('partials/footer.ejs'); -%>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </div>
+
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+
+    <script src="./scripts/script.js" charset="UTF-8"></script>
+
+</body>
+</html>

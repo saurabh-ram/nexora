@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <link rel="stylesheet" href="../css/media_queries.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+
+        h1 > span {
+            color: #3e3f3c;
+            font-family: 'EB Garamond', sans-serif;
+            font-size: 44px;
+            font-weight: 400;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .contact-form > form textarea {
+            height: 200px;
+        }
+
+    </style>
+</head>
+<body class="old-skool-bg padding-0 margin-0 flex-0 width-100p overflo-x-hidden">
+    <div class="left">
+        <header>
+            <nav class="black-bg-1 flex-0 justify-spc-btw align-center">
+                <div class="logo flex-0 justify-center align-center">
+                    <img class="invert" height="45" src="../images/nav_bar/nexora-logo.png" alt="App logo">
+                </div>
+                <div class="options">
+                    <ul class="padding-0 flex-0 align-center">
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/">Home</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/in-development">Community</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/contact">Contact</a></span></li>
+                        <% if (locals.isAuthenticated) { %>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                        <% } else { %>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                        <% } %>
+                    </ul>
+                    <div class="hamburger">
+                        <img height="30" src="../svgs/nav_bar/hamburger.svg" alt="Hamburger icon">
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="contact-wrapper flex-0 justify-center align-center">
+                <form class="contact-container flex-0 justify-center align-center" action="/posts" method="post" enctype="multipart/form-data" >
+                    <div class="contact-form flex-column-0">
+                        <h1><span>Create New Post</span></h1>
+                        <div class="form-fields flex-column align-center">
+                            <input name="title" type="text" class="feedback-input" placeholder="Title" required />
+                            <input name="labels" type="text" class="feedback-input" placeholder="Labels" required />
+                            <textarea name="content" class="feedback-input" placeholder="Description" required ></textarea>
+                            <!-- Date Picker for Release Date -->
+                            <label for="releaseDate">Release Date:</label>
+                            <input name="releaseDate" type="date" class="feedback-input" id="releaseDate" required />
+
+                            <!-- Dropdown for Release Year -->
+                            <label for="releaseYear">Release Year:</label>
+                            <select name="releaseYear" id="releaseYear" class="feedback-input" required></select>
+
+                            <input type="submit" value="ADD" />
+                        </div>
+                    </div>
+                    <figure>
+                        <!-- <div class="upload-poster">
+                        </div> -->
+                        <label for="posterUploadBtn" id="uploadPoster" class="flex-column-0 justify-center align-center">
+                            <input class="poster-upload-input" type="file" name="poster" id="posterUploadBtn" accept="image/*">
+                            <div id="imgView" class="flex-column-0 justify-center align-center">
+                                <img src="../svgs/upload/goku-kamehameha-blue.png" alt="Upload image icon">
+                                <span class="def-text-font grey-text text-align-center">Drag and drop or click here<br/>to upload image</span>
+                                <span class="def-text-font grey-text text-align-center">Upload any images from Desktop</span>
+                            </div>
+                        </label>
+
+                    </figure>
+                </form>
+            </div>
+        </main>
+        <%- include('partials/footer.ejs'); -%>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </div>
+
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+
+    <script src="../scripts/script.js" charset="UTF-8"></script>
+
+</body>
+
+</html>

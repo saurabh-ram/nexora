@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <link rel="stylesheet" href="../css/media_queries.css">
+    <style>
+        h1 > span {
+            color: #3e3f3c;
+            font-family: 'EB Garamond', sans-serif;
+            font-size: 44px;
+            font-weight: 400;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .check-it-out-card-container {
+            background: url('<%= poster %>') no-repeat center center;
+            background-size: cover;
+            background-position: 50% 100%;
+        }
+
+    </style>
+</head>
+<body class="old-skool-bg padding-0 margin-0 flex-0 width-100p overflo-x-hidden">
+    <div class="left">
+        <header>
+            <nav class="black-bg-1 flex-0 justify-spc-btw align-center">
+                <div class="logo flex-0 justify-center align-center">
+                    <img class="invert" height="45" src="../images/nav_bar/nexora-logo.png" alt="App logo">
+                </div>
+                <div class="options">
+                    <ul class="padding-0 flex-0 align-center">
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/">Home</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/new-post">New Post</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/in-development">Community</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
+                        <li class="list-style"><span><a class="nav-font text-decoration" href="/contact">Contact</a></span></li>
+                        <% if (locals.isAuthenticated) { %>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                        <% } else { %>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                        <% } %>
+                    </ul>
+                    <div class="hamburger">
+                        <img height="30" src="../svgs/nav_bar/hamburger.svg" alt="Hamburger icon">
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="main-container check-it-out-container flex-0">
+            <aside class="check-it-out-card-container">
+                <div class="check-it-out-card flex-column-0">
+                    <!-- <div class="image-container flex-0 align-center justify-center">
+                        <img src="../images/posters/review-1-poster.jpg" alt="Review poster">
+                    </div> -->
+                    <div class="check-it-out flex-column-0">
+                        <span class="blog-post-title text-overflow-2l"><a href=""><%= title %></a></span>
+                        <span class="blog-post-date"><span class="bold-dark-grey-text">Date: </span><%= created_date %></span>
+                        <div class="review-labels blog-post-date flex-0">
+                            <span class="bold-dark-grey-text">Labels: </span>
+                            <ul class="list-style padding-0 margin-0">
+                                <% for( let i = 0; i < locals.labels.length; i++ ) { %>
+                                    <li><span><%= labels[i] %></span></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <span class="blog-post-date"><span class="bold-dark-grey-text">Aired: </span><%= release_year %></span>
+                        <span class="blog-post-date"><span class="bold-dark-grey-text">Release Date: </span><%= release_date %></span>
+                    </div>
+                    <div class="blog-post-btns flex-0 justify-spc-btw">
+                        <button class="share-btn">Share</button>
+                        <!-- <button class="check-it-out-btn">Check it out</button> -->
+                    </div>
+
+                </div>
+            </aside>
+            
+            <main>
+                <div class="content-list-wrapper">
+                    <div class="review-container flex-column-0 justify-spc-btw align-center">
+                        <div class="review-card text-align-center">
+                            <div class="poster-container flex-0 justify-center align-center">
+                                <img src="<%= poster %>" alt="Review poster">
+                            </div>
+                            <span class="blog-post-title text-overflow-2l"><a href=""><%= title %></a></span>
+                            <p class="blog-post-desc about-desc text-align-justify"><%= content %></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <%- include('partials/footer.ejs'); -%>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </div>
+
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+
+    <script src="../scripts/script.js" charset="UTF-8"></script>
+
+</body>
+
+</html>

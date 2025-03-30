@@ -1,0 +1,498 @@
+
+
+:root {
+    --navBColor: rgba(183, 126, 185, 0.462);
+    --navHeight: 60px;
+    --asideWidth: 320px;
+    --asideBColor: rgba(232, 232, 226, 0.695);
+    --blogCardSize: 250px;
+    --posterHeight: 350px;
+    --posterWidth: 500px;
+}
+
+
+
+
+/* ----------------left section---------------- */
+
+
+.left {
+    width: 100%;
+}
+
+
+
+
+/* ----------------Navigation bar---------------- */
+
+
+header {
+    position: sticky;
+    top: 0;
+    background: url('../images/nav_bar/sky-water-nav-bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-position: 50% 100%;
+    z-index: 16;
+}
+
+nav {
+    height: var(--navHeight);
+    background-color: var(--navBColor);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0 20px;
+    z-index: 17;
+}
+
+nav ul {
+    gap: 40px;
+    transition: display 300ms ease-out;
+}
+
+nav > .options li .nav-font:hover {
+    color: white;
+}
+
+.hamburger {
+    display: none;
+    transition: display 300ms ease-out;
+}
+
+
+
+
+/* ----------------content-lists section---------------- */
+
+
+.main-container {
+    width: 100%;
+    height: calc(100vh - var(--navHeight));
+}
+
+.content-list-wrapper {
+    width: 100%;
+    max-height: 100%;
+}
+
+.content-list-wrapper > .content-list-container {
+    width: 100%;
+    height: 100%;
+    padding: 20px 20px 20px 0;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.content-list {
+    height: calc(100vh - var(--navHeight) - 42px);
+    gap: 10px;
+    overflow-y: scroll;
+}
+
+
+
+
+/* ----------------Blog post Card---------------- */
+
+
+/* ----------------Common Blog post Card---------------- */
+
+main .blog-card {
+    width: auto;
+    height: 350px;
+    padding: 30px;
+    gap: 20px;
+}
+
+.blog-card img {
+    width: var(--blogCardSize);
+    height: var(--blogCardSize);
+    object-fit: cover;
+    object-position: 0px 90%;
+}
+
+.blog-card .image-container {
+    display: flex;
+}
+
+.blog-post {
+    gap: 10px;
+}
+
+.blog-post-title > a {
+    color: #3e3f3c;
+    font-family: 'EB Garamond', sans-serif;
+    font-size: 44px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.blog-post-date {
+    color: #3e3f3c;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+}
+
+.blog-post-desc {
+    color: #3e3f3c;
+    height: 135px;
+    line-height: 32px;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    text-align: justify;
+}
+
+
+/* ----------------Recent Blog post Card---------------- */
+
+.recent-post-container {
+    background: url('../images/posters/review-1-poster.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: 50% 100%;
+    width: var(--asideWidth);
+    height: 100%;
+    transition: width 300ms, height 300ms;
+}
+
+.recent-post-card img {
+    width: var(--blogCardSize);
+    height: var(--blogCardSize);
+    object-fit: cover;
+    object-position: 0px 90%;
+}
+
+.recent-post-card .image-container {
+    display: none;
+}
+
+.recent-post-card {
+    background-color: var(--asideBColor);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(10px);
+    width: var(--asideWidth);
+    height: 100%;
+    padding: 20px;
+    gap: 10px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.recent {
+    height: 400px;
+}
+
+
+
+
+/* ----------------Buttons---------------- */
+
+
+.share-btn, .check-it-out-btn, .edit-btn {
+    color: blueviolet;
+    background: transparent;
+    border: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+
+
+
+/* ----------------About Page---------------- */
+
+
+#profile-picture {
+    height: 200px;
+    width: auto;
+    border-radius: 50%;
+}
+
+.about-desc {
+    height: auto;
+    margin: 40px 0;
+}
+
+.about-container, .contact-container {
+    width: 80%;
+    padding: 10px;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+
+
+
+/* ----------------Contact Page---------------- */
+
+
+.contact-form > .form-fields {
+    gap: 12px;
+}
+
+.feedback-input {
+    background-color: transparent;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 13px;
+    border: 2px solid #3586ff;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    transition: all 0.3s;
+    outline: 0;
+    box-sizing: border-box;
+}
+
+.contact-form > .form-fields input,
+.contact-form > .form-fields textarea,
+.contact-form > .form-fields select,
+.contact-form > .form-fields label {
+    width: 600px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+[type="submit"] {
+    width: 100%;
+    background: #3586ff;
+    border-radius: 5px;
+    border: 0;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    transition: all 0.3s;
+    margin-top: -4px;
+    font-weight: 700;
+}
+
+[type="submit"]:hover {
+    background: #3586ff;
+}
+
+
+
+
+/* ----------------Drag and Drop Button---------------- */
+
+
+/* .upload-poster {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #3586ff;
+    border-radius: 5px;
+} */
+
+#uploadPoster {
+    width: 300px;
+    height: 300px;
+    padding: 24px;
+    border: 1px #3586ff solid;
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#posterUploadBtn {
+    display: none;
+}
+
+#imgView {
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    border: 1px #3586ff dashed;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#imgView img {
+    width: 150px;
+    height: 150px;
+}
+
+#uploadPoster span:nth-child(2) {
+    font-size: 14px;
+    padding: 8px;
+}
+
+#uploadPoster span {
+    font-size: 12px;
+}
+
+
+
+
+.check-it-out {
+    gap: 8px;
+}
+
+.check-it-out-card-container {
+    background: url('../images/posters/review-1-poster.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: 50% 100%;
+    width: var(--asideWidth);
+    height: 100%;
+    transition: width 300ms, height 300ms;
+}
+
+.check-it-out-card {
+    background-color: var(--asideBColor);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(10px);
+    width: var(--asideWidth);
+    height: 100%;
+    padding: 20px;
+    gap: 30px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* .recent-post-card img {
+    width: var(--blogCardSize);
+    height: var(--blogCardSize);
+    object-fit: cover;
+    object-position: 0px 90%;
+} */
+
+.review-labels ul {
+    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.review-labels ul span {
+    padding: 0 8px 2px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    outline: 1px white solid;
+    outline-offset: 3px;
+    /* transition: outline-offset 300ms ease-out, outline-style 300ms ease-out; */
+}
+
+.review-labels > ul span:hover {
+    outline: 1px white solid;
+    outline-offset: 4px;
+}
+
+.review-card {
+    width: 80%;
+    padding: 10px;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.review-card .poster-container {
+    margin-bottom: 40px;
+    display: flex;
+}
+
+.review-card img {
+    width: var(--posterWidth);
+    height: var(--posterHeight);
+    object-fit: cover;
+    object-position: 0px 90%;
+    border: 1px #3e3f3c solid;
+    border-radius: 5px;
+    transition: width 300ms, height 300ms, outline 300ms;
+    outline: 1px #3e3f3c solid;
+    outline-offset: 8px;
+}
+
+.review-container {
+    height: calc(100vh - var(--navHeight) - 42px);
+    overflow-y: scroll;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.signup-container, .signin-container {
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 50, 0.4), rgba(0, 0, 50, 0.4)), url("../images/login_bg.jpg");
+    background-position: center;
+    background-size: cover;
+    position: relative;
+}
+
+.form-box {
+    background-color: rgba(240, 255, 255, 0.8);
+    width: 350px;
+    height: auto;
+    padding: 10px 10px 40px;
+}
+
+.form-box > form {
+    width: 90%;
+    gap: 8px;
+}
+
+.input-control {
+    width: 100%;
+}
+
+.signup-signin-form > .input-control input {
+    background-color: transparent;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.83em;
+    box-sizing: border-box;
+}
+
+.signup-signin-form input:focus {
+    outline: 1px solid #439A97;
+}
+
+.register-button, .login-button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.register-button > button, .login-button > button {
+    background-color: #439A97;
+    color: azure;
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.register-button > button:hover, .login-button > button:hover {
+    background-color: #357c79;
+}
+
+.login-here > p, .register-here > p {
+    font-size: 0.83em;
+}
+
+
+
+
+
+
+
+
+

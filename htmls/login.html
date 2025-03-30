@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In page</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <link rel="stylesheet" href="../css/media_queries.css">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+    <script type="text/javascript" src="../scripts/script2.js" defer ></script>
+</head>
+<body class="padding-0 margin-0">
+    <div class="signin-container flex-0 justify-center align-center">
+        <div class="form-box flex-column-0 align-center ">
+            <h1>Welcome back!</h1>
+            <form id="signInForm" class="signup-signin-form flex-column-0 align-center" action="/login" method="post" novalidate >
+                <div class="input-control">
+                    <input type="email" id="emailInput" name="username" placeholder="Email" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="password" id="passwordInput" name="password" placeholder="Password" required autocomplete="current-password" />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="login-button">
+                    <button>Log in</button>
+                </div>
+                <div class="register-here">
+                    <p>Don't have an account? register <a class="blueviolet-text" href="/register">here</a></p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,9 +1,9 @@
 import pg from "pg";
-import Redis from "ioredis";
+// import Redis from "ioredis";
+import { Redis } from '@upstash/redis'
 import env from "dotenv";
 
 env.config();
-
 const db = new pg.Pool({
     user: process.env.PG_USER,
     host: process.env.PG_HOST,
@@ -19,14 +19,17 @@ const db = new pg.Pool({
 
 
 
-const redis = new Redis({
-    host: process.env.REDIS_HOST, // Use service name from docker-compose
-    port: process.env.REDIS_PORT,
-}); // Connects to Redis at localhost:6379
+// const redis = new Redis({
+//     host: process.env.REDIS_HOST, // Use service name from docker-compose
+//     port: process.env.REDIS_PORT,
+// }); // Connects to Redis at localhost:6379
 
 // // If your Redis is hosted elsewhere, specify the connection string
 // const redis = new Redis("redis://your-redis-url:6379");
-
+const redis = new Redis({
+  url: process.env.REDIS_URL,
+  token: process.env.REDIS_TOKEN,
+});
 
 export default {
     query: (text, params) => db.query(text, params), // Abstraction

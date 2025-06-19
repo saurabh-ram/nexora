@@ -45,6 +45,11 @@ async function main() {
         document.querySelector(".right-side-bar").style.opacity = "0.5";
     });
 
+    // Add an Event Listener for App Logo
+    addEventIfIdExists(".app-logo", "click", () => {
+        window.location.href = "/";
+    });
+
     // Add an Event Listener to show the selected image
     addEventIfIdExists("#posterUploadBtn", "change", showImage);
 

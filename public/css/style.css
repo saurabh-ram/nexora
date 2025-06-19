@@ -53,6 +53,9 @@ nav > .options li .nav-font:hover {
     color: white;
 }
 
+.app-logo {
+    cursor: pointer;
+}
 .hamburger {
     display: none;
     transition: display 300ms ease-out;

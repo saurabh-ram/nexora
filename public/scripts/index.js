@@ -134,24 +134,28 @@ app.get("/", async (req, res) => {
   // Redis
   const cachedPosts = await redis.get(`homePosts`);
   if (cachedPosts) {
-    posts = JSON.parse(cachedPosts);
+    // posts = JSON.parse(cachedPosts);
+    posts = JSON.parse(JSON.stringify(cachedPosts)); //UpStash
   } else {
     const postsObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC;");
     console.log(postsObj.rows);
     postsObj.rows.forEach((post) => {
       posts.push(createPostJSONSnakeCase(post));
     });
-    await redis.set(`homePosts`, JSON.stringify(posts), "EX", 3600); // Cache for 1 hour
+    // await redis.set(`homePosts`, JSON.stringify(posts), "EX", 3600); // Cache for 1 hour
+    await redis.set(`homePosts`, JSON.stringify(posts), { ex: 3600 } ); // Cache for 1 hour
   }
 
 
   const cachedLatestPost = await redis.get(`homeLatestPost`)
   if (cachedLatestPost) {
-    latestPost = JSON.parse(cachedLatestPost);
+    // latestPost = JSON.parse(cachedLatestPost);
+    latestPost = JSON.parse(JSON.stringify(cachedLatestPost)); //UpStash
   } else {
     const latestPostObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
     latestPost = createPostJSONSnakeCase(latestPostObj.rows[0]);
-    await redis.set(`homeLatestPost`, JSON.stringify(latestPost), "EX", 3600); // Cache for 1 hour
+    // await redis.set(`homeLatestPost`, JSON.stringify(latestPost), "EX", 3600); // Cache for 1 hour
+    await redis.set(`homeLatestPost`, JSON.stringify(latestPost), { ex: 3600 } ); // Cache for 1 hour
     // console.log(latestPostObj.rows);
     // console.log(latestPost);
   }
@@ -166,12 +170,13 @@ app.get("/latest-post", async (req, res) => {
 
   const cachedPost = await redis.get(`latestPost`)
   if (cachedPost) {
-    post = JSON.parse(cachedPost);
+    post = JSON.parse(JSON.stringify(cachedPost));
   } else {
     const postObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
     post = createPostJSONCamelCase(postObj.rows[0]);
   
-    await redis.set(`latestPost`, JSON.stringify(post), "EX", 300); // Cache for 1 hour
+    // await redis.set(`latestPost`, JSON.stringify(post), "EX", 300); // Cache for 1 hour
+    await redis.set(`latestPost`, JSON.stringify(post), { ex: 300 } ); // Cache for 1 hour
   }
 
   res.render("full_review.ejs", {
@@ -197,13 +202,14 @@ app.get("/posts/:id", async (req, res) => {
 
   const cachedPost = await redis.get(`blogpost:${id}`)
   if (cachedPost) {
-    post = JSON.parse(cachedPost);
+    post = JSON.parse(JSON.stringify(cachedPost));
   } else {
     const postObj = await db.query("SELECT * FROM blog_posts WHERE id = $1;", [id]);
     // console.log(postObj);
     post = createPostJSONCamelCase(postObj.rows[0]);
   
-    await redis.set(`blogpost:${id}`, JSON.stringify(post), "EX", 3600); // Cache for 1 hour
+    // await redis.set(`blogpost:${id}`, JSON.stringify(post), "EX", 3600); // Cache for 1 hour
+    await redis.set(`blogpost:${id}`, JSON.stringify(post), { ex: 3600 } ); // Cache for 1 hour
   }
 
   res.render("full_review.ejs", {
@@ -229,10 +235,10 @@ app.post("/posts", upload.single("poster"), async (req, res) => {
   const labels = req.body["labels"];
   const releaseDate = req.body["releaseDate"];
   const releaseYear = req.body["releaseYear"];
-  const autherId = req.user["id"];
+  const authorId = req.user["id"];
   await db.query(
-    "INSERT INTO blog_posts (title, content, poster, labels, release_date, release_year, auther_id) VALUES ($1, $2, $3, $4, $5, $6, $7);",
-    [title, content, poster, labels, releaseDate, releaseYear, autherId]
+    "INSERT INTO blog_posts (title, content, poster, labels, release_date, release_year, author_id) VALUES ($1, $2, $3, $4, $5, $6, $7);",
+    [title, content, poster, labels, releaseDate, releaseYear, authorId]
   );
   res.redirect("/");
 });

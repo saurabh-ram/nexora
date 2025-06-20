@@ -1,8 +1,14 @@
-# Use an official Node.js runtime as the base image
-FROM node:18
+# Use the official Node.js 20 Alpine base image (lightweight)
+FROM node:20-alpine
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /usr/src/app
+
+# --- Security: Upgrade Alpine packages to latest patched versions ---
+# apk update - refreshes package index
+# apk upgrade - upgrades all installed packages (patches known vulnerabilities)
+# rm -rf /var/cache/apk/* - cleans up cache to keep image small
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 
 # Copy package.json and package-lock.json
 COPY package*.json ./

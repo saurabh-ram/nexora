@@ -6,6 +6,9 @@ services:
     container_name: nexora_app
     ports:
       - "${APP_PORT}:${APP_PORT}"
+    depends_on:
+      - postgres
+      - redis 
     environment:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -21,3 +24,27 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_URL=${REDIS_URL}
       - REDIS_TOKEN=${REDIS_TOKEN}
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    ports:
+      - "${PGL_PORT}:${PGL_PORT}"
+    environment:
+      POSTGRES_USER: ${PGL_USER}
+      POSTGRES_PASSWORD: ${PGL_PASSWORD}
+      POSTGRES_DB: ${PGL_DATABASE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    restart: always
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+
+volumes:
+  pgdata:

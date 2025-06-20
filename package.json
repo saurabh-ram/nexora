@@ -4,9 +4,6 @@
   "description": "It's a web application for reviews regarding Movies, Web Series, Animes, Short Films, Mini Series, etc.",
   "main": "index.js",
   "type": "module",
-  "engines": {
-    "node": "14.X"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./public/scripts/index.js",

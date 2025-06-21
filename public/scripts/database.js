@@ -4,6 +4,11 @@ import { Redis } from '@upstash/redis'
 import env from "dotenv";
 
 env.config();
+
+if (!process.env.PG_PORT) {
+  console.error('PG_PORT is missing!');
+}
+
 const db = new pg.Pool({
     user: process.env.PG_USER,
     host: process.env.PG_HOST,

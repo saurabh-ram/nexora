@@ -4,6 +4,7 @@ services:
   app:
     build: .
     container_name: nexora_app
+    restart: always
     ports:
       - "${APP_PORT}:${APP_PORT}"
     environment:

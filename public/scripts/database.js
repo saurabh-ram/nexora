@@ -8,6 +8,12 @@ env.config();
 if (!process.env.PG_PORT) {
   console.error('PG_PORT is missing!');
 }
+if (!process.env.REDIS_URL) {
+  console.error('REDIS_URL is missing!');
+}
+if (!process.env.REDIS_TOKEN) {
+  console.error('REDIS_TOKEN is missing!');
+}
 
 const db = new pg.Pool({
     user: process.env.PG_USER,

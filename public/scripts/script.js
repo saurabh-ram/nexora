@@ -1,12 +1,72 @@
 // console.log("Inside script.js");
 
-function showImage() {
-    let imageLink = URL.createObjectURL(posterUploadBtn.files[0]);
-    imgView.style.backgroundImage = `url(${imageLink})`;
-    imgView.firstElementChild.style.display = "none"
-    imgView.textContent = "";
-    imgView.style.border = 0;
+// function showImage() {
+//     let imageLink = URL.createObjectURL(posterUploadBtn.files[0]);
+//     imgView.style.backgroundImage = `url(${imageLink})`;
+//     imgView.firstElementChild.style.display = "none"
+//     imgView.textContent = "";
+//     imgView.style.border = 0;
+// }
+
+async function showImage(inputId, previewId) {
+    console.log(previewId);
+    const previewImg = document.getElementById(previewId);
+    let imageLink = URL.createObjectURL(document.getElementById(inputId).files[0]);
+    previewImg.style.backgroundImage = `url(${imageLink})`;
+    previewImg.firstElementChild.style.display = "none";
+    previewImg.textContent = "";
+    previewImg.style.border = 0;
 }
+
+async function setupDropZone(dropZoneId, inputId, previewId) {
+    const dropZone = document.getElementById(dropZoneId);
+    const imgView = document.getElementById(dropZoneId).querySelector(".imgView");
+    const fileInput = document.getElementById(inputId);
+
+    // imgView.addEventListener("click", () => fileInput.click());
+
+    dropZone.addEventListener("dragover", async (e) => {
+        e.preventDefault();
+        imgView.classList.add("highlight");
+        Array.from(imgView.getElementsByTagName("span")).forEach(s => {
+            s.classList.remove("grey-text");
+            s.style.color = "#008cff";
+        });
+        // let imageSrc = imgView.firstElementChild.src;
+        // imgView.firstElementChild.src = await getBlueImageName(imageSrc);
+    });
+
+    dropZone.addEventListener("dragleave", async () => {
+        imgView.classList.remove("highlight");
+        Array.from(imgView.getElementsByTagName("span")).forEach(s => {
+            s.style.removeProperty("color");
+            s.classList.add("grey-text");
+        });
+        // let imageSrc = imgView.firstElementChild.src;
+        // imgView.firstElementChild.src = await getOgImageName(imageSrc);
+    });
+
+    dropZone.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        imgView.classList.remove("highlight");
+        imgView.firstElementChild.style.display = "none";
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            fileInput.files = e.dataTransfer.files;
+            await showImage(inputId, previewId);
+            dropZone.querySelector(".fileName").textContent = file.name;
+        }
+    });
+
+    fileInput.addEventListener("change", async () => {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            await showImage(inputId, previewId);
+            dropZone.querySelector(".fileName").textContent = file.name;
+        }
+    });
+}
+
 
 function updateTextOverflowClass() {
     const card = document.querySelector(".recent-post");
@@ -50,18 +110,22 @@ async function main() {
         window.location.href = "/";
     });
 
-    // Add an Event Listener to show the selected image
-    addEventIfIdExists("#posterUploadBtn", "change", showImage);
+    // // Add an Event Listener to show the selected image
+    // addEventIfIdExists("#posterUploadBtn", "change", showImage);
 
-    // Add an Event Listeners for drag and drop feature
-    addEventIfIdExists("#uploadPoster", "dragover", function (event) {
-        event.preventDeafault();
-    });
-    addEventIfIdExists("#uploadPoster", "drop", function (event) {
-        event.preventDeafault();
-        posterUploadBtn.files = event.dataTransfer.files;
-        showImage();
-    });
+    // // Add an Event Listeners for drag and drop feature
+    // addEventIfIdExists("#uploadPoster", "dragover", function (event) {
+    //     event.preventDeafault();
+    // });
+    // addEventIfIdExists("#uploadPoster", "drop", function (event) {
+    //     event.preventDeafault();
+    //     posterUploadBtn.files = event.dataTransfer.files;
+    //     showImage();
+    // });
+
+    // Initialize drag & drop for both image zones
+    await setupDropZone("uploadPoster", "posterUploadBtn", "imgPreview");
+
 
     // Listen for window resize
     updateTextOverflowClass();

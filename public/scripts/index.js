@@ -134,8 +134,11 @@ app.get("/", async (req, res) => {
   // Redis
   const cachedPosts = await redis.get(`homePosts`);
   if (cachedPosts) {
-    // posts = JSON.parse(cachedPosts);
-    posts = JSON.parse(JSON.stringify(cachedPosts)); //UpStash
+    if (typeof cachedPosts == "string") {
+      posts = JSON.parse(cachedPosts);
+    } else {
+      posts = JSON.parse(JSON.stringify(cachedPosts)); //UpStash
+    }
   } else {
     const postsObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC;");
     console.log(postsObj.rows);
@@ -149,8 +152,11 @@ app.get("/", async (req, res) => {
 
   const cachedLatestPost = await redis.get(`homeLatestPost`)
   if (cachedLatestPost) {
-    // latestPost = JSON.parse(cachedLatestPost);
-    latestPost = JSON.parse(JSON.stringify(cachedLatestPost)); //UpStash
+    if (typeof cachedLatestPost == "string") {
+      latestPost = JSON.parse(cachedLatestPost);
+    } else {
+      latestPost = JSON.parse(JSON.stringify(cachedLatestPost)); //UpStash
+    }
   } else {
     const latestPostObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
     latestPost = createPostJSONSnakeCase(latestPostObj.rows[0]);
@@ -170,7 +176,11 @@ app.get("/latest-post", async (req, res) => {
 
   const cachedPost = await redis.get(`latestPost`)
   if (cachedPost) {
-    post = JSON.parse(JSON.stringify(cachedPost));
+    if (typeof cachedPost == "string") {
+      post = JSON.parse(cachedPost);
+    } else {
+      post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
+    }
   } else {
     const postObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
     post = createPostJSONCamelCase(postObj.rows[0]);
@@ -202,7 +212,11 @@ app.get("/posts/:id", async (req, res) => {
 
   const cachedPost = await redis.get(`blogpost:${id}`)
   if (cachedPost) {
-    post = JSON.parse(JSON.stringify(cachedPost));
+    if (typeof cachedPost == "string") {
+      post = JSON.parse(cachedPost);
+    } else {
+      post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
+    }
   } else {
     const postObj = await db.query("SELECT * FROM blog_posts WHERE id = $1;", [id]);
     // console.log(postObj);

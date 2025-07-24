@@ -329,6 +329,12 @@ main .blog-card {
     font-size: 12px;
 }
 
+.highlight {
+    color: #008cff;
+    border-color: #008cff;
+    background-color: #e3f2fd;
+}
+
 
 
 

@@ -305,7 +305,7 @@ main .blog-card {
     display: none;
 }
 
-#imgView {
+#imgPreview {
     background-position: center;
     background-size: cover;
     width: 100%;
@@ -315,7 +315,7 @@ main .blog-card {
     box-sizing: border-box;
 }
 
-#imgView img {
+#imgPreview #kamehamehaIcon {
     width: 150px;
     height: 150px;
 }

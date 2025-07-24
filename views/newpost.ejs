@@ -77,12 +77,13 @@
                         <!-- <div class="upload-poster">
                         </div> -->
                         <label for="posterUploadBtn" id="uploadPoster" class="flex-column-0 justify-center align-center">
-                            <input class="poster-upload-input" type="file" name="poster" id="posterUploadBtn" accept="image/*">
-                            <div id="imgView" class="flex-column-0 justify-center align-center">
-                                <img src="../svgs/upload/goku-kamehameha-blue.png" alt="Upload image icon">
+                            <input class="poster-upload-input" type="file" name="poster" id="posterUploadBtn" accept="image/*" multiple>
+                            <div id="imgPreview" class="imgView flex-column-0 justify-center align-center">
+                                <img id="kamehamehaIcon" src="../svgs/upload/goku-kamehameha-blue.png" alt="Upload image icon">
                                 <span class="def-text-font grey-text text-align-center">Drag and drop or click here<br/>to upload image</span>
                                 <span class="def-text-font grey-text text-align-center">Upload any images from Desktop</span>
                             </div>
+                            <span class="fileName"></span>
                         </label>
 
                     </figure>

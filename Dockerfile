@@ -16,6 +16,10 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+LABEL maintainer="Saurabh Ram"
+LABEL version="1.0.0"
+LABEL description="This image is for Nexora web application."
+
 # Copy the rest of the application files
 COPY . .
 

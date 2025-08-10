@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS blog_posts (
 	title VARCHAR(255) NOT NULL,
 	content TEXT NOT NULL,
 	poster BYTEA,
+	image_url TEXT NOT NULL,
+	transformation TEXT NOT NULL,
 	labels TEXT,
 	release_date DATE,
 	release_year INT,

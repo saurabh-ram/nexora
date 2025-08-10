@@ -9,7 +9,7 @@
 // }
 
 async function showImage(inputId, previewId) {
-    console.log(previewId);
+    // console.log(previewId);
     const previewImg = document.getElementById(previewId);
     let imageLink = URL.createObjectURL(document.getElementById(inputId).files[0]);
     previewImg.style.backgroundImage = `url(${imageLink})`;
@@ -20,51 +20,53 @@ async function showImage(inputId, previewId) {
 
 async function setupDropZone(dropZoneId, inputId, previewId) {
     const dropZone = document.getElementById(dropZoneId);
-    const imgView = document.getElementById(dropZoneId).querySelector(".imgView");
-    const fileInput = document.getElementById(inputId);
+    if (dropZone) {
+        const imgView = document.getElementById(dropZoneId).querySelector(".imgView");
+        const fileInput = document.getElementById(inputId);
 
-    // imgView.addEventListener("click", () => fileInput.click());
+        // imgView.addEventListener("click", () => fileInput.click());
 
-    dropZone.addEventListener("dragover", async (e) => {
-        e.preventDefault();
-        imgView.classList.add("highlight");
-        Array.from(imgView.getElementsByTagName("span")).forEach(s => {
-            s.classList.remove("grey-text");
-            s.style.color = "#008cff";
+        dropZone.addEventListener("dragover", async (e) => {
+            e.preventDefault();
+            imgView.classList.add("highlight");
+            Array.from(imgView.getElementsByTagName("span")).forEach(s => {
+                s.classList.remove("grey-text");
+                s.style.color = "#008cff";
+            });
+            // let imageSrc = imgView.firstElementChild.src;
+            // imgView.firstElementChild.src = await getBlueImageName(imageSrc);
         });
-        // let imageSrc = imgView.firstElementChild.src;
-        // imgView.firstElementChild.src = await getBlueImageName(imageSrc);
-    });
 
-    dropZone.addEventListener("dragleave", async () => {
-        imgView.classList.remove("highlight");
-        Array.from(imgView.getElementsByTagName("span")).forEach(s => {
-            s.style.removeProperty("color");
-            s.classList.add("grey-text");
+        dropZone.addEventListener("dragleave", async () => {
+            imgView.classList.remove("highlight");
+            Array.from(imgView.getElementsByTagName("span")).forEach(s => {
+                s.style.removeProperty("color");
+                s.classList.add("grey-text");
+            });
+            // let imageSrc = imgView.firstElementChild.src;
+            // imgView.firstElementChild.src = await getOgImageName(imageSrc);
         });
-        // let imageSrc = imgView.firstElementChild.src;
-        // imgView.firstElementChild.src = await getOgImageName(imageSrc);
-    });
 
-    dropZone.addEventListener("drop", async (e) => {
-        e.preventDefault();
-        imgView.classList.remove("highlight");
-        imgView.firstElementChild.style.display = "none";
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            fileInput.files = e.dataTransfer.files;
-            await showImage(inputId, previewId);
-            dropZone.querySelector(".fileName").textContent = file.name;
-        }
-    });
+        dropZone.addEventListener("drop", async (e) => {
+            e.preventDefault();
+            imgView.classList.remove("highlight");
+            imgView.firstElementChild.style.display = "none";
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                fileInput.files = e.dataTransfer.files;
+                await showImage(inputId, previewId);
+                dropZone.querySelector(".fileName").textContent = file.name;
+            }
+        });
 
-    fileInput.addEventListener("change", async () => {
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            await showImage(inputId, previewId);
-            dropZone.querySelector(".fileName").textContent = file.name;
-        }
-    });
+        fileInput.addEventListener("change", async () => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                await showImage(inputId, previewId);
+                dropZone.querySelector(".fileName").textContent = file.name;
+            }
+        });
+    }
 }
 
 

@@ -20,7 +20,9 @@
         }
 
         .check-it-out-card-container {
-            background: url('<%= poster %>') no-repeat center center;
+            /* background: url('<%= poster %>') no-repeat center center; */
+            background: url('<%= image_url %>') no-repeat center center;
+            /* background: url('https://res.cloudinary.com/dggtyfdjz/image/upload/f_auto,q_auto/v1754653543/you_cant_see_me_ienix2.jpg') no-repeat center center; */
             background-size: cover;
             background-position: 50% 100%;
         }
@@ -87,7 +89,9 @@
                     <div class="review-container flex-column-0 justify-spc-btw align-center">
                         <div class="review-card text-align-center">
                             <div class="poster-container flex-0 justify-center align-center">
-                                <img src="<%= poster %>" alt="Review poster">
+                                <!-- <img src="<%= poster %>" alt="Review poster"> -->
+                                <img src="<%= image_url %>" alt="Review poster">
+                                <!-- <img src="https://res.cloudinary.com/dggtyfdjz/image/upload/f_auto,q_auto/v1754653543/you_cant_see_me_ienix2.jpg" alt="Review poster"> -->
                             </div>
                             <span class="blog-post-title text-overflow-2l"><a href=""><%= title %></a></span>
                             <p class="blog-post-desc about-desc text-align-justify"><%= content %></p>

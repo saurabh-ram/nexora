@@ -10,7 +10,8 @@
     <link rel="shortcut icon" href="../images/nav_bar/nexora-logo.png" type="image/x-icon">
     <style>
         .recent-post-container {
-            background: url('<%= latestPost["poster"] %>') no-repeat center center;
+            /* background: url('<%= latestPost["poster"] %>') no-repeat center center; */
+            background: url('<%= latestPost["image_url"] %>') no-repeat center center;
             background-size: cover;
             background-position: 50% 100%;
         }
@@ -47,7 +48,8 @@
             <aside class="recent-post-container">
                 <div class="recent-post-card flex-0">
                     <div class="image-container flex-0 align-center justify-center">
-                        <img src="<%= latestPost["poster"] %>" alt="Review poster">
+                        <!-- <img src="<%= latestPost["poster"] %>" alt="Review poster"> -->
+                        <img src="<%= latestPost["image_url"] %>" alt="Review poster">
                     </div>
                     <div class="recent-post flex-column-0">
                         <span class="blog-post-title text-overflow-2l"><a href=""><%= latestPost["title"] %></a></span>
@@ -68,7 +70,8 @@
                             <% for( let i = 0; i < posts.length; i++ ) { %>
                                 <div class="blog-card flex-0">
                                     <div class="image-container flex-0 align-center justify-center">
-                                        <img src="<%= posts[i]["poster"] %>" alt="Review poster">
+                                        <!-- <img src="<%= posts[i]["poster"] %>" alt="Review poster"> -->
+                                        <img src="<%= posts[i]["image_url"] %>" alt="Review poster">
                                     </div>
                                     <div class="blog-post flex-column-0 justify-spc-btw">
                                         <div class="blog-post-title-container flex-0 justify-spc-btw">

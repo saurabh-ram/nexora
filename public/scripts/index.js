@@ -1,7 +1,7 @@
 import express from "express";
 import multer, { memoryStorage } from "multer";
 import fs from "fs";
-import path from "path";
+import path, { resolve } from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import db, { redis } from "./database.js";
@@ -13,6 +13,8 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
+import cloudinaryModule from "./mediahandler.js";
+import streamifier from "streamifier";
 
 const app = express();
 const port = 4000;
@@ -27,6 +29,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+const schema = process.env.PG_SCHEMA;
+const cloudinary = cloudinaryModule.cloudinary;
 
 app.use(
   session({
@@ -53,6 +58,8 @@ function createPostJSONCamelCase(post) {
   const title = post["title"];
   const content = post["content"];
   const poster = post["poster"];
+  const imageUrl = post["image_url"];
+  const transformation = post["transformation"];
   const labelsString = post["labels"];
   const releaseDateISO = post["release_date"];
   const releaseYear = post["release_year"];
@@ -73,6 +80,9 @@ function createPostJSONCamelCase(post) {
     year: "numeric",
   }).format(createdDateISO).split(" ");
   const createdDate = `${cd} ${cm}, ${cy}`;
+
+  const transformedUrl = imageUrl ? imageUrl.replace('/upload/', `/upload/${transformation}/`) : "https://res.cloudinary.com/dggtyfdjz/image/upload/f_auto,q_auto/v1754653543/you_cant_see_me_ienix2.jpg";
+
   return {
     id: id,
     title: title,
@@ -82,7 +92,8 @@ function createPostJSONCamelCase(post) {
     releaseDate: releaseDate,
     releaseYear: releaseYear,
     authorId: authorId,
-    createdDate: createdDate
+    createdDate: createdDate,
+    imageUrl: transformedUrl,
   }
 }
 
@@ -91,6 +102,8 @@ function createPostJSONSnakeCase(post) {
   const title = post["title"];
   const content = post["content"];
   const poster = post["poster"];
+  const imageUrl = post["image_url"];
+  const transformation = post["transformation"];
   const labelsString = post["labels"];
   const releaseDateISO = post["release_date"];
   const releaseYear = post["release_year"];
@@ -111,6 +124,8 @@ function createPostJSONSnakeCase(post) {
     year: "numeric",
   }).format(createdDateISO).split(" ");
   const createdDate = `${cd} ${cm}, ${cy}`;
+
+  const transformedUrl = imageUrl ? imageUrl.replace('/upload/', `/upload/${transformation}/`) : "https://res.cloudinary.com/dggtyfdjz/image/upload/f_auto,q_auto/v1754653543/you_cant_see_me_ienix2.jpg";
 
   return {
     post_id: id,
@@ -121,8 +136,27 @@ function createPostJSONSnakeCase(post) {
     release_date: releaseDate,
     release_year: releaseYear,
     author_id: authorId,
-    created_date: createdDate
+    created_date: createdDate,
+    image_url: transformedUrl,
   }
+}
+
+async function uploadToCloudinary(file, folderName = "posters") {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: folderName,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        console.log(result);
+        return resolve(result.secure_url);
+      }
+    );
+
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+  });
 }
 
 app.get("/", async (req, res) => {
@@ -140,7 +174,7 @@ app.get("/", async (req, res) => {
       posts = JSON.parse(JSON.stringify(cachedPosts)); //UpStash
     }
   } else {
-    const postsObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC;");
+    const postsObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC;`);
     console.log(postsObj.rows);
     postsObj.rows.forEach((post) => {
       posts.push(createPostJSONSnakeCase(post));
@@ -158,7 +192,7 @@ app.get("/", async (req, res) => {
       latestPost = JSON.parse(JSON.stringify(cachedLatestPost)); //UpStash
     }
   } else {
-    const latestPostObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
+    const latestPostObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`);
     latestPost = createPostJSONSnakeCase(latestPostObj.rows[0]);
     // await redis.set(`homeLatestPost`, JSON.stringify(latestPost), "EX", 3600); // Cache for 1 hour
     await redis.set(`homeLatestPost`, JSON.stringify(latestPost), { ex: 3600 } ); // Cache for 1 hour
@@ -182,7 +216,7 @@ app.get("/latest-post", async (req, res) => {
       post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
     }
   } else {
-    const postObj = await db.query("SELECT * FROM blog_posts ORDER BY id DESC LIMIT 1;");
+    const postObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`);
     post = createPostJSONCamelCase(postObj.rows[0]);
   
     // await redis.set(`latestPost`, JSON.stringify(post), "EX", 300); // Cache for 1 hour
@@ -194,6 +228,7 @@ app.get("/latest-post", async (req, res) => {
     title: post["title"],
     content: post["content"],
     poster: post["poster"],
+    image_url: post["imageUrl"],
     labels: post["labels"],
     release_date: post["releaseDate"],
     release_year: post["releaseYear"],
@@ -218,10 +253,10 @@ app.get("/posts/:id", async (req, res) => {
       post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
     }
   } else {
-    const postObj = await db.query("SELECT * FROM blog_posts WHERE id = $1;", [id]);
+    const postObj = await db.query(`SELECT * FROM ${schema}.blog_posts WHERE id = $1;`, [id]);
     // console.log(postObj);
     post = createPostJSONCamelCase(postObj.rows[0]);
-  
+
     // await redis.set(`blogpost:${id}`, JSON.stringify(post), "EX", 3600); // Cache for 1 hour
     await redis.set(`blogpost:${id}`, JSON.stringify(post), { ex: 3600 } ); // Cache for 1 hour
   }
@@ -231,6 +266,7 @@ app.get("/posts/:id", async (req, res) => {
     title: post["title"],
     content: post["content"],
     poster: post["poster"],
+    image_url: post["imageUrl"],
     labels: post["labels"],
     release_date: post["releaseDate"],
     release_year: post["releaseYear"],
@@ -250,9 +286,11 @@ app.post("/posts", upload.single("poster"), async (req, res) => {
   const releaseDate = req.body["releaseDate"];
   const releaseYear = req.body["releaseYear"];
   const authorId = req.user["id"];
+  const url = req.file ? await uploadToCloudinary(req.file) : "https://res.cloudinary.com/dggtyfdjz/image/upload/f_auto,q_auto/v1754653543/you_cant_see_me_ienix2.jpg";
+
   await db.query(
-    "INSERT INTO blog_posts (title, content, poster, labels, release_date, release_year, author_id) VALUES ($1, $2, $3, $4, $5, $6, $7);",
-    [title, content, poster, labels, releaseDate, releaseYear, authorId]
+    `INSERT INTO ${schema}.blog_posts (title, content, poster, image_url, labels, release_date, release_year, author_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`,
+    [title, content, poster, url, labels, releaseDate, releaseYear, authorId]
   );
   res.redirect("/");
 });
@@ -263,7 +301,7 @@ app.put("/posts", async (req, res) => {
   const releaseDate = req.body["releaseDate"];
   const releaseYear = req.body["releaseYear"];
   const createdDate = new Date().getDate();
-  await db.query("Update Query", [
+  await db.query(`Update Query`, [
     title,
     content,
     null,
@@ -315,13 +353,13 @@ app.get("/verify-email", async (req, res) => {
   const { token } = req.query;
 
   try {
-      const result = await db.query("SELECT * FROM users WHERE verification_token = $1", [token]);
+      const result = await db.query(`SELECT * FROM ${schema}.users WHERE verification_token = $1`, [token]);
 
       if (result.rows.length === 0) {
           return res.status(400).json({ error: "Invalid or expired token" });
       }
 
-      await db.query("UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE verification_token = $1", [token]);
+      await db.query(`UPDATE ${schema}.users SET is_verified = TRUE, verification_token = NULL WHERE verification_token = $1`, [token]);
 
       res.json({ message: "Email successfully verified!" });
   } catch (error) {
@@ -361,7 +399,7 @@ app.post("/register", async (req, res) => {
   const password = req.body.password;
 
   try {
-    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
+    const checkResult = await db.query(`SELECT * FROM ${schema}.users WHERE email = $1`, [
       email,
     ]);
 
@@ -376,7 +414,7 @@ app.post("/register", async (req, res) => {
 
           const verificationToken = uuidv4();
           const result = await db.query(
-            "INSERT INTO users (firstname, lastname, username, email, password, is_verified, verification_token) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
+            `INSERT INTO ${schema}.users (firstname, lastname, username, email, password, is_verified, verification_token) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
             [firstname, lastname, username, email, hash, false, verificationToken]
           );
 
@@ -435,13 +473,13 @@ app.get("/verify-email", async (req, res) => {
   const { token } = req.query;
 
   try {
-      const result = await db.query("SELECT * FROM users WHERE verification_token = $1", [token]);
+      const result = await db.query(`SELECT * FROM ${schema}.users WHERE verification_token = $1`, [token]);
 
       if (result.rows.length === 0) {
           return res.status(400).json({ error: "Invalid or expired token" });
       }
 
-      await db.query("UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE verification_token = $1", [token]);
+      await db.query(`UPDATE ${schema}.users SET is_verified = TRUE, verification_token = NULL WHERE verification_token = $1`, [token]);
 
       res.json({ message: "Email successfully verified!" });
   } catch (error) {
@@ -454,8 +492,8 @@ app.get("/verify-email", async (req, res) => {
 
 passport.use("local", new Strategy(async function verify(username, password, cb) {
     try {
-      console.log(username, "    ", password);
-      const result = await db.query("SELECT * FROM users WHERE email = $1", [
+      // console.log(username, "    ", password);
+      const result = await db.query(`SELECT * FROM ${schema}.users WHERE email = $1`, [
         username,
       ]);
       if (result.rows.length > 0) {
@@ -489,11 +527,11 @@ passport.use("local", new Strategy(async function verify(username, password, cb)
 // }, async (accessToken, refreshToken, profile, cb) => {
 //   console.log(profile);
 //   try {
-//     const result = await db.query("SELECT * FROM users WHERE email = $1;", [profile.email]);
+//     const result = await db.query(`SELECT * FROM ${schema}.users WHERE email = $1;`, [profile.email]);
 //     if (result.rows.length === 0) {
 //       const userName = profile.email.split("@")[0];
 //       const newUser = await db.query(
-//         "INSERT INTO users (firstname, lastname, username, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *;",
+//         `INSERT INTO ${schema}.users (firstname, lastname, username, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
 //         ["Nexora", "user", userName, profile.email, "google"]
 //       );
 //       cb(null, newUser.rows[0]);

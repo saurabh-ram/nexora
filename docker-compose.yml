@@ -17,6 +17,7 @@ services:
       - PG_PASSWORD=${PG_PASSWORD}
       - PG_DATABASE=${PG_DATABASE}
       - PG_PORT=${PG_PORT}
+      - PG_SCHEMA=${PG_SCHEMA}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}

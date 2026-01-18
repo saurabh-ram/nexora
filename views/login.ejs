@@ -11,11 +11,34 @@
         * {
             font-family: 'Poppins', sans-serif;
         }
+        .toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #439A97;
+        color: white;
+        padding: 14px 20px;
+        border-radius: 8px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.4s ease;
+        }
+
+        .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+        }
+
     </style>
     <script type="text/javascript" src="../scripts/formvalidation.js" defer ></script>
 </head>
 <body class="padding-0 margin-0">
     <div class="signin-container flex-0 justify-center align-center">
+        <% if (success && success.length > 0) { %>
+          <div class="toast show"><%= success[0] %></div>
+        <% } %>
+
+
         <div class="form-box flex-column-0 align-center ">
             <h1>Welcome back!</h1>
             <form id="signInForm" class="signup-signin-form flex-column-0 align-center" action="/login" method="post" novalidate >
@@ -37,5 +60,11 @@
             </form>
         </div>
     </div>
+    <script>
+    setTimeout(() => {
+        document.querySelector('.toast')?.classList.remove('show');
+    }, 3000);
+    </script>
+
 </body>
 </html>

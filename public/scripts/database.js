@@ -15,12 +15,42 @@ if (!process.env.REDIS_TOKEN) {
   console.error('REDIS_TOKEN is missing!');
 }
 
+const environment = process.env.ENVIRONMENT || 'production'; 
+
+console.log(`Database environment: ${environment}`);
+
+let user = process.env.PG_USER;
+let host = process.env.PG_HOST;
+let database = process.env.PG_DATABASE;
+let password = process.env.PG_PASSWORD;
+let port = process.env.PG_PORT;
+let schema = process.env.PG_SCHEMA || 'public';
+
+
+if (environment === 'local') {
+  user = process.env.PGL_USER;
+  host = process.env.PGL_HOST;
+  database = process.env.PGL_DATABASE;
+  password = process.env.PGL_PASSWORD;
+  port = process.env.PGL_PORT;
+  schema = process.env.PGL_SCHEMA;
+  console.log(`Database environment: ${environment}`);
+} else if (environment === 'development') {
+  user = process.env.PGD_USER;
+  host = process.env.PGD_HOST;
+  database = process.env.PGD_DATABASE;
+  password = process.env.PGD_PASSWORD;
+  port = process.env.PGD_PORT;
+  schema = process.env.PGD_SCHEMA;
+  console.log(`Database environment is ${environment} and schema set to ${schema}`);
+}
+
 const db = new pg.Pool({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
+    user: user,
+    host: host,
+    database: database,
+    password: password,
+    port: port,
 });
 
 // ✅ `pg.Pool` handles connection pooling automatically, 
@@ -42,8 +72,10 @@ const redis = new Redis({
   token: process.env.REDIS_TOKEN,
 });
 
+console.log('schema:', schema);
+
 export default {
     query: (text, params) => db.query(text, params), // Abstraction
 };
 
-export { redis };
+export { redis, schema };

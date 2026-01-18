@@ -25,3 +25,26 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 INSERT INTO users (firstname, lastname, username, email, password) VALUES ('Saurabh', 'Ram', 'exampleuser', 'example@example.com', 'Example@123');
+
+-- select pg_get_serial_sequence('nexora.users', 'id');
+
+-- select last_value, is_called
+-- from nexora.users_id_seq;
+
+select setval(
+  pg_get_serial_sequence('nexora.users', 'id'),
+  coalesce(max(id), 1)
+)
+from nexora.users;
+
+-- select pg_get_serial_sequence('public.users', 'id');
+
+-- select last_value, is_called
+-- from public.users_id_seq;
+
+select setval(
+  pg_get_serial_sequence('public.users', 'id'),
+  coalesce(max(id), 1)
+)
+from public.users;
+

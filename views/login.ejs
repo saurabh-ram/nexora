@@ -11,24 +11,6 @@
         * {
             font-family: 'Poppins', sans-serif;
         }
-        .toast {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: #439A97;
-        color: white;
-        padding: 14px 20px;
-        border-radius: 8px;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.4s ease;
-        }
-
-        .toast.show {
-        opacity: 1;
-        transform: translateY(0);
-        }
-
     </style>
     <script type="text/javascript" src="../scripts/formvalidation.js" defer ></script>
 </head>
@@ -36,6 +18,9 @@
     <div class="signin-container flex-0 justify-center align-center">
         <% if (success && success.length > 0) { %>
           <div class="toast show"><%= success[0] %></div>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+          <div class="toast show"><%= error[0] %></div>
         <% } %>
 
 
@@ -53,17 +38,30 @@
                 <div class="login-button">
                     <button>Log in</button>
                 </div>
-                <div class="register-here">
-                    <p>Don't have an account? register <a class="blueviolet-text" href="/register">here</a></p>
+                <div class="register-here flex-column-0">
+                    <p>Don't have an account? <a class="blueviolet-text text-decoration hover-effect" href="/register">Register here</a></p>
+                    <div class="middle-line"></div>
+                    <p>Not verified yet? <button class="blueviolet-text text-decoration link-button hover-effect" type="button"
+                        onclick="document.getElementById('resendForm').submit()">Resend verification email</button>
+                    </p>
                 </div>
 
             </form>
+
+            <form id="resendForm" action="/verify/resend" method="post">
+                <input type="hidden" name="email" id="emailHidden">
+            </form>
+            <script>
+                document.querySelector('input[name="username"]').addEventListener('input', e => {
+                    document.getElementById('emailHidden').value = e.target.value;
+                });
+            </script>
         </div>
     </div>
     <script>
     setTimeout(() => {
         document.querySelector('.toast')?.classList.remove('show');
-    }, 3000);
+        }, 3000);
     </script>
 
 </body>

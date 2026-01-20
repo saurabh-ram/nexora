@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up page</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/utility.css">
+    <link rel="stylesheet" href="../css/media_queries.css">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+    <script type="text/javascript" src="../scripts/formvalidation.js" defer ></script>
+</head>
+<body class="padding-0 margin-0">
+    <div class="signup-container flex-0 justify-center align-center">
+        <% if (error && error.length > 0) { %>
+          <div class="toast show"><%= error[0] %></div>
+        <% } %>
+
+        <div class="form-box flex-column-0 align-center ">
+            <h1>Create an account</h1>
+            <form id="signUpForm" class="signup-signin-form flex-column-0 align-center" action="/register" method="post" novalidate >
+                <div class="input-control">
+                    <input type="text" id="firstNameInput" name="firstName" placeholder="First Name" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="text" id="lastNameInput" name="lastName" placeholder="Last Name" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="username" id="usernameInput" name="username" placeholder="Username" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="email" id="emailInput" name="email" placeholder="Email" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="password" id="passwordInput" name="password" placeholder="Password" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="input-control">
+                    <input type="password" id="confirmPasswordInput" name="confirmPassword" placeholder="Confirm Password" required />
+                    <div class="error error-text"></div>
+                </div>
+                <div class="register-button">
+                    <button>Register</button>
+                </div>
+                <div class="login-here">
+                    <p>Already have an account? login <a class="blueviolet-text" href="/login">here</a></p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script>
+    setTimeout(() => {
+        document.querySelector('.toast')?.classList.remove('show');
+        }, 3000);
+    </script>
+</body>
+</html>

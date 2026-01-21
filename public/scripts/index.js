@@ -17,6 +17,8 @@ import session from "express-session";
 import cloudinaryModule from "./mediahandler.js";
 import streamifier from "streamifier";
 import flash from "connect-flash";
+// import resendEmailLimiter from "./ratelimit.js";
+import { resendEmailRateLimiter } from "./ratelimit.js";
 
 const app = express();
 const port = 4000;
@@ -27,12 +29,6 @@ env.config();
 
 app.use(express.static("public"));
 // app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-const cloudinary = cloudinaryModule.cloudinary;
 
 app.use(
   session({
@@ -45,8 +41,6 @@ app.use(
   })
 );
 
-app.use(flash());
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -56,11 +50,20 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(flash());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const cloudinary = cloudinaryModule.cloudinary;
 
 function createPostJSONCamelCase(post) {
   const id = post["id"];
@@ -168,14 +171,11 @@ async function uploadToCloudinary(file, folderName = "posters") {
   });
 }
 
-app.get("/", async (req, res) => {
-  let isAuthenticated = false;
-  if (req.user) isAuthenticated = true;
+async function cachePosts(key, query, queryParams, jsonCreator) {
   let posts = [];
-  let latestPost;
-  
+
   // Redis
-  const cachedPosts = await redis.get(`homePosts`);
+  const cachedPosts = await redis.get(key);
   if (cachedPosts) {
     if (typeof cachedPosts == "string") {
       posts = JSON.parse(cachedPosts);
@@ -183,54 +183,55 @@ app.get("/", async (req, res) => {
       posts = JSON.parse(JSON.stringify(cachedPosts)); //UpStash
     }
   } else {
-    const postsObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC;`);
-    // console.log(postsObj.rows);
-    postsObj.rows.forEach((post) => {
-      posts.push(createPostJSONSnakeCase(post));
+    const resultRows = await db.query(query, normalizeParams(queryParams));
+    console.log(resultRows.rows);
+    resultRows.rows.forEach((post) => {
+      posts.push(jsonCreator(post));
     });
-    // await redis.set(`homePosts`, JSON.stringify(posts), "EX", 3600); // Cache for 1 hour
-    await redis.set(`homePosts`, JSON.stringify(posts), { ex: 3600 } ); // Cache for 1 hour
+    // await redis.set(key, JSON.stringify(posts), "EX", 3600); // Cache for 1 hour
+    await redis.set(key, JSON.stringify(posts), { ex: 3600 } ); // Cache for 1 hour
   }
+  return posts;
+}
 
+function normalizeParams(params) {
+  if (params == null) return [];
+  return Array.isArray(params) ? params : [params];
+}
 
-  const cachedLatestPost = await redis.get(`homeLatestPost`)
-  if (cachedLatestPost) {
-    if (typeof cachedLatestPost == "string") {
-      latestPost = JSON.parse(cachedLatestPost);
-    } else {
-      latestPost = JSON.parse(JSON.stringify(cachedLatestPost)); //UpStash
-    }
-  } else {
-    const latestPostObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`);
-    latestPost = createPostJSONSnakeCase(latestPostObj.rows[0]);
-    // await redis.set(`homeLatestPost`, JSON.stringify(latestPost), "EX", 3600); // Cache for 1 hour
-    await redis.set(`homeLatestPost`, JSON.stringify(latestPost), { ex: 3600 } ); // Cache for 1 hour
-    // console.log(latestPostObj.rows);
-    // console.log(latestPost);
-  }
+async function getPosts(key, query, queryParams, jsonCreator) {
+  const posts = await cachePosts(key, query, queryParams, jsonCreator);
+  return posts;
+}
 
+async function getPost(key, query, queryParams, jsonCreator) {
+  const posts = await cachePosts(key, query, queryParams, jsonCreator);
+  return posts[0];
+}
+
+app.get("/", async (req, res) => {
+  let isAuthenticated = false;
+  if (req.user) isAuthenticated = true;
+  const posts = await getPosts(`homePosts`,
+    `SELECT * FROM ${schema}.blog_posts ORDER BY id DESC;`, 
+    null,
+    createPostJSONSnakeCase);
+  const latestPost = await getPost(`homeLatestPost`,
+    `SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`,
+    null,
+    createPostJSONSnakeCase);
+
+  // console.log(posts);
   res.render("home.ejs", { isAuthenticated: isAuthenticated, page: "home", posts: posts, latestPost: latestPost });
 });
 
 app.get("/latest-post", async (req, res) => {
   let isAuthenticated = false;
   if (req.user) isAuthenticated = true;
-  let post;
-
-  const cachedPost = await redis.get(`latestPost`)
-  if (cachedPost) {
-    if (typeof cachedPost == "string") {
-      post = JSON.parse(cachedPost);
-    } else {
-      post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
-    }
-  } else {
-    const postObj = await db.query(`SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`);
-    post = createPostJSONCamelCase(postObj.rows[0]);
-  
-    // await redis.set(`latestPost`, JSON.stringify(post), "EX", 300); // Cache for 1 hour
-    await redis.set(`latestPost`, JSON.stringify(post), { ex: 300 } ); // Cache for 1 hour
-  }
+  const post = await getPost(`latestPost`,
+    `SELECT * FROM ${schema}.blog_posts ORDER BY id DESC LIMIT 1;`,
+    null,
+    createPostJSONCamelCase);
 
   res.render("full_review.ejs", {
     post_id: post["id"],
@@ -252,23 +253,10 @@ app.get("/posts/:id", async (req, res) => {
   let id = req.params.id;
   let isAuthenticated = false;
   if (req.user) isAuthenticated = true;
-  let post;
-
-  const cachedPost = await redis.get(`blogpost:${id}`)
-  if (cachedPost) {
-    if (typeof cachedPost == "string") {
-      post = JSON.parse(cachedPost);
-    } else {
-      post = JSON.parse(JSON.stringify(cachedPost)); //UpStash
-    }
-  } else {
-    const postObj = await db.query(`SELECT * FROM ${schema}.blog_posts WHERE id = $1;`, [id]);
-    // console.log(postObj);
-    post = createPostJSONCamelCase(postObj.rows[0]);
-
-    // await redis.set(`blogpost:${id}`, JSON.stringify(post), "EX", 3600); // Cache for 1 hour
-    await redis.set(`blogpost:${id}`, JSON.stringify(post), { ex: 3600 } ); // Cache for 1 hour
-  }
+  const post = await getPost(`blogpost:${id}`,
+    `SELECT * FROM ${schema}.blog_posts WHERE id = $1;`,
+    [id],
+    createPostJSONCamelCase);
 
   res.render("full_review.ejs", {
     post_id: post["id"],
@@ -416,7 +404,7 @@ app.post("/register", async (req, res) => {
         } else {
 
           const verificationToken = crypto.randomBytes(32).toString("hex");
-          const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+          const hashedToken = hashToken(verificationToken);
           const result = await db.query(
             `INSERT INTO ${schema}.users (user_id, firstname, lastname, username, email, password, is_verified, verification_token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`,
             [userid, firstname, lastname, username, email, hash, false, hashedToken]
@@ -434,7 +422,7 @@ app.post("/register", async (req, res) => {
           // req.login(user, (err) => {
           //   console.log(err);
           //   res.redirect("/new-post");
-          // })
+          // });
 
           req.flash("success", "Registration successful! Check your email for verification.");
           return res.redirect("/login");
@@ -448,13 +436,24 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/verify/resend", async (req, res) => {
-  const email = req.body.email || "";
+function hashToken(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+app.post("/verify/resend", /*resendEmailLimiter,*/ async (req, res) => {
+  const email = req.body.email ?? "";
 
   if (email.trim() === "") {
     req.flash("error", "Please provide an email address to verify.");
     return res.redirect("/login");
   }
+
+  const isAllowed = await checkRequestLimit(req, res, email);
+
+  if (!isAllowed) {
+    return res.redirect("/login");
+  }
+
   try {
     const checkResult = await db.query(`SELECT * FROM ${schema}.users WHERE email = $1`, [
       email,
@@ -463,25 +462,23 @@ app.post("/verify/resend", async (req, res) => {
     if (checkResult.rows.length === 0) {
       req.flash("error", "Email is not registered. Please register first.");
       return res.redirect("/register");
+    } else if (checkResult.rows[0].is_verified) {
+      req.flash("error", "Email is already verified. Try logging in.");
+      return res.redirect("/login");
     } else {
+      
       const username = checkResult.rows[0].username;
-      if (checkResult.rows[0].is_verified) {
-        req.flash("error", "Email is already verified. Try logging in.");
-        return res.redirect("/login");
-      } else {
+      const verificationToken = crypto.randomBytes(32).toString("hex");
+      const hashedToken = hashToken(verificationToken);
+      const result = await db.query(
+        `UPDATE ${schema}.users SET verification_token = $1 WHERE email = $2 RETURNING *;`,
+        [hashedToken, email]
+      );
 
-        const verificationToken = crypto.randomBytes(32).toString("hex");
-        const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
-        const result = await db.query(
-          `UPDATE ${schema}.users SET verification_token = $1 WHERE email = $2 RETURNING *;`,
-          [hashedToken, email]
-        );
+      await sendVerificationEmail(email, username, verificationToken);
 
-        await sendVerificationEmail(email, username, verificationToken);
-
-        req.flash("success", "Verification link sent successfully! Check your email.");
-        return res.redirect("/login");
-      }
+      req.flash("success", "Verification link sent successfully! Check your email.");
+      return res.redirect("/login");
     }
   } catch (err) {
     console.log(err);
@@ -489,6 +486,24 @@ app.post("/verify/resend", async (req, res) => {
     return res.status(500).redirect("/login");
   }
 });
+
+async function checkRequestLimit(req, res, email) {
+
+  const key = email
+  ? email.trim().toLowerCase()
+  : req.ip;
+
+  const { success } = await resendEmailRateLimiter.limit(key);
+
+  if (!success) {
+    req.flash(
+      "error",
+      "You've requested too many verification emails. Please wait 15 minutes."
+    );
+    return false;
+  }
+  return true;
+}
 
 // Function to send verification email
 async function sendVerificationEmail(email, username, token) {
@@ -523,7 +538,7 @@ Nexora Team`,
 
 app.get("/verify-email", async (req, res) => {
   const { token } = req.query;
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashedToken = hashToken(token);
   
   try {
       console.log("Verifying token...");

@@ -1,5 +1,4 @@
-
-console.log("Inside script2.js");
+// console.log("Inside script2.js");
 
 
 

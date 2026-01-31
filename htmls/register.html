@@ -18,7 +18,7 @@
     <div class="signup-container flex-0 justify-center align-center">
         <div class="form-box flex-column-0 align-center ">
             <h1>Create an account</h1>
-            <form id="signUpForm" class="signup-signin-form flex-column-0 align-center" action="/register" method="post" novalidate >
+            <form id="signUpForm" class="signup-signin-form flex-column-0 align-center" action="/auth/register" method="post" novalidate >
                 <div class="input-control">
                     <input type="text" id="firstNameInput" name="firstName" placeholder="First Name" required />
                     <div class="error error-text"></div>
@@ -47,7 +47,7 @@
                     <button>Register</button>
                 </div>
                 <div class="login-here">
-                    <p>Already have an account? login <a class="blueviolet-text" href="/login">here</a></p>
+                    <p>Already have an account? login <a class="blueviolet-text" href="auth/login">here</a></p>
                 </div>
 
             </form>

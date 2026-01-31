@@ -21,41 +21,48 @@
           <div class="toast show"><%= error[0] %></div>
         <% } %>
 
-        <div class="form-box flex-column-0 align-center ">
-            <h1>Create an account</h1>
-            <form id="signUpForm" class="signup-signin-form flex-column-0 align-center" action="/register" method="post" novalidate >
-                <div class="input-control">
-                    <input type="text" id="firstNameInput" name="firstName" placeholder="First Name" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="input-control">
-                    <input type="text" id="lastNameInput" name="lastName" placeholder="Last Name" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="input-control">
-                    <input type="username" id="usernameInput" name="username" placeholder="Username" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="input-control">
-                    <input type="email" id="emailInput" name="email" placeholder="Email" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="input-control">
-                    <input type="password" id="passwordInput" name="password" placeholder="Password" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="input-control">
-                    <input type="password" id="confirmPasswordInput" name="confirmPassword" placeholder="Confirm Password" required />
-                    <div class="error error-text"></div>
-                </div>
-                <div class="register-button">
-                    <button>Register</button>
-                </div>
-                <div class="login-here">
-                    <p>Already have an account? login <a class="blueviolet-text" href="/login">here</a></p>
-                </div>
+        <div class="form-box flex-column-0 align-center padding-bottom-0">
+            <div class="flex-column-0 align-center invisible-bg">
+                <h1>Create an account</h1>
+                <form id="signUpForm" class="signup-signin-form flex-column-0 align-center" action="<%= REGISTER %>" method="post" novalidate >
+                    <div class="input-control">
+                        <input type="text" id="firstNameInput" name="firstName" placeholder="First Name" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="input-control">
+                        <input type="text" id="lastNameInput" name="lastName" placeholder="Last Name" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="input-control">
+                        <input type="username" id="usernameInput" name="username" placeholder="Username" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="input-control">
+                        <input type="email" id="emailInput" name="email" placeholder="Email" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="input-control">
+                        <input type="password" id="passwordInput" name="password" placeholder="Password" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="input-control">
+                        <input type="password" id="confirmPasswordInput" name="confirmPassword" placeholder="Confirm Password" required />
+                        <div class="error error-text"></div>
+                    </div>
+                    <div class="register-button">
+                        <button>Register</button>
+                    </div>
+                    <div class="login-here">
+                        <p>Already have an account? <a class="blueviolet-text text-decoration hover-effect" href="<%= LOGIN %>">Login here</a></p>
+                    </div>
 
-            </form>
+                </form>
+            </div>
+            <div class="flex-0 justify-spc-btw form-box-footer">
+                <p><a class="footer-text text-decoration def-text-font" href="<%= HOME %>">Home</a></p>
+                <p><a class="footer-text text-decoration def-text-font" href="/about">About</a></p>
+                <p><a class="footer-text text-decoration def-text-font" href="/contact">Contact Us</a></p>
+            </div>
         </div>
     </div>
     <script>

@@ -448,12 +448,24 @@ main .blog-card {
     background-color: rgba(240, 255, 255, 0.8);
     width: 350px;
     height: auto;
-    padding: 10px 10px 40px;
+    /* padding: 10px 10px 40px; */
+    gap: 8px;
+    padding: 10px 10px 16px;
 }
 
-.form-box > form {
-    width: 90%;
+.form-box > div > form {
+    width: 100%;
     gap: 8px;
+}
+
+.form-box > div {
+    width: 90%;
+    gap: 16px;
+}
+
+.form-box-footer {
+    width: 90%;
+    font-size: 0.83em;
 }
 
 .input-control {

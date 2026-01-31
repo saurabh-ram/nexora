@@ -2,17 +2,40 @@ version: "3.8"
 
 services:
   app:
+    # Default in (docker-compose | v1): <project-name>_<service-name>:latest
+    # Default in (docker compose | v2): <project-name>-<service-name>:latest
+    # image: nexora-app:latest
+    env_file:
+      - ./.env
     build: .
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   args:
+    #     APP_ENV: ${APP_ENV}       # Example: production, staging, etc.
+    #     NODE_VERSION: ${NODE_VERSION:-18} # default 18 if not set
+    # Map Style ✔
+    #   args:
+    #     APP_ENV: ${APP_ENV}       # Valid ✔
+    # List Style ✘
+    #   args:
+    #     - APP_ENV=${APP_ENV}      # Invalid ✘
+    
     container_name: nexora_app
     restart: always
     ports:
       - "${APP_PORT}:${APP_PORT}"
     environment:
+      # Map Style ✔
+      # GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}     # Valid ✔
+      # List Style ✔
+      # - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}    # Valid ✔
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - SESSION_SECRET=${SESSION_SECRET}
       - DOMAIN_NAME=${DOMAIN_NAME}
       - ENVIRONMENT=${ENVIRONMENT}
+      - APP_PORT=${APP_PORT}
       - PG_HOST=${PG_HOST}
       - PG_USER=${PG_USER}
       - PG_PASSWORD=${PG_PASSWORD}
@@ -27,4 +50,3 @@ services:
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-

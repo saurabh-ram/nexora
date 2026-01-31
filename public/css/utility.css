@@ -31,6 +31,10 @@
     box-sizing: border-box;
 }
 
+.border-box {
+    box-sizing: border-box;
+}
+
 .middle-line {
     background-color: #439A97;
     height: 1px;
@@ -46,8 +50,28 @@
     margin: 0;
 }
 
+.margin-top-0 {
+    margin-top: 0;
+}
+
 .padding-0 {
     padding: 0;
+}
+
+.padding-top-0 {
+    padding-top: 0;
+}
+
+.padding-bottom-0 {
+    padding-bottom: 0;
+}
+
+.padding-left-0 {
+    padding-left: 0;
+}
+
+.padding-right-0 {
+    padding-right: 0;
 }
 
 .flex-0 {
@@ -177,10 +201,18 @@
     font-weight: 400;
 }
 
+.footer-text:hover {
+    font-weight: 700;
+}
+
 .music-player-text-font {
     color: #444;
     font-family: "Roboto", Arial, Helvetica, sans-serif;
     font-size: 10px;
+}
+
+.invisible-bg {
+    background-color: transparent;
 }
 
 .old-skool-bg {

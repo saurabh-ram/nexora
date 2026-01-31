@@ -23,10 +23,10 @@
                         <li class="list-style"><span><a class="nav-font text-decoration" href="/about">About</a></span></li>
                         <li class="list-style"><span><a class="nav-font text-decoration" href="/contact">Contact</a></span></li>
                         <% if (locals.isAuthenticated) { %>
-                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="/logout">Log out</a></button></li>
+                            <li class="list-style"><button id="log-out-btn" class="nav-font"><a class="text-decoration" href="<%= LOGOUT %>">Log out</a></button></li>
                         <% } else { %>
-                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="/register">Sign up</a></button></li>
-                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="/login">Log in</a></button></li>
+                            <li class="list-style"><button id="sign-up-btn" class="nav-font"><a class="text-decoration white-text" href="<%= REGISTER %>">Sign up</a></button></li>
+                            <li class="list-style"><button id="log-in-btn" class="nav-font"><a class="text-decoration" href="<%= LOGIN %>">Log in</a></button></li>
                         <% } %>
                     </ul>
                     <div class="hamburger">
@@ -179,7 +179,7 @@
         <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     </div>
 
-    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page }); -%>
+    <%- include('partials/sidebar.ejs', { isAuthenticated: isAuthenticated, page: page, HOME, NEW_POST, REGISTER, LOGIN, LOGOUT }); -%>
 
     <script src="./scripts/script.js" charset="UTF-8"></script>
 

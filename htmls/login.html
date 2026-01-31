@@ -18,7 +18,7 @@
     <div class="signin-container flex-0 justify-center align-center">
         <div class="form-box flex-column-0 align-center ">
             <h1>Welcome back!</h1>
-            <form id="signInForm" class="signup-signin-form flex-column-0 align-center" action="/login" method="post" novalidate >
+            <form id="signInForm" class="signup-signin-form flex-column-0 align-center" action="/auth/login" method="post" novalidate >
                 <div class="input-control">
                     <input type="email" id="emailInput" name="username" placeholder="Email" required />
                     <div class="error error-text"></div>
@@ -31,7 +31,7 @@
                     <button>Log in</button>
                 </div>
                 <div class="register-here">
-                    <p>Don't have an account? register <a class="blueviolet-text" href="/register">here</a></p>
+                    <p>Don't have an account? register <a class="blueviolet-text" href="/auth/register">here</a></p>
                 </div>
 
             </form>

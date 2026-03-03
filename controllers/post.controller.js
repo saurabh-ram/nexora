@@ -107,6 +107,7 @@ const createNewPost = async (req, res) => {
     releaseDate,
     releaseYear,
     authorId,
+    jsonStyle: jsonCreator.SNAKE_CASE,
   });
   res.redirect(POST_PATHS.ALL_POSTS);
 };

@@ -57,6 +57,7 @@ const createPost = async (post) => {
     releaseDate,
     releaseYear,
     authorId,
+    jsonStyle,
   } = post;
 
   console.log("Post Service -> authorId: " + authorId);
@@ -73,6 +74,16 @@ const createPost = async (post) => {
 
   const keys = [ `homePosts`, `homeLatestPost` ];
   cachingService.deleteCacheKeys(keys);
+  await getPosts(
+    `homePosts`,
+    () => postRepository.findAllOrderByIdDesc(),
+    jsonStyle,
+  );
+  await getPost(
+    `homeLatestPost`,
+    () => postRepository.findLastNOrderById(1),
+    jsonStyle,
+  );
 
   return result;
 };
